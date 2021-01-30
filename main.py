@@ -1,6 +1,5 @@
 import pygame
 import random
-from math import cos, pi
 
 
 def reset():
@@ -17,7 +16,7 @@ def add_link():
     global pos, score
     last = len(pos) - 1
     pos.append([pos[last][0], pos[last][1]])
-    score += int(10*speed*(len(pos)**0.2))
+    score += int(10*speed*(len(pos)**0.1))
 
 
 def death():
@@ -39,7 +38,10 @@ def colour(i):
     elif STYLE == 'neon green':
         colour = (0, 255, 0)
     elif STYLE == 'green gradiant':
-        colour = (0, 200 + 50*cos(i*pi/4), 0)
+        while i > 6:
+            i -= 7
+        colour = [(0, 250, 0), (0, 220, 0), (0, 190, 0), (0, 160, 0),
+                  (0, 190, 0), (0, 220, 0), (0, 250, 0)][i]
     elif STYLE == 'multicolour':
         while i > 5:
             i -= 6
@@ -80,6 +82,8 @@ while running:
 
     for i in range(len(pos)):
         pygame.draw.rect(screen, colour(i), (pos[i][0], pos[i][1], 10, 10))
+
+    pygame.draw.rect(screen, (0, 0, 0), (pos[0][0]+2, pos[0][1]+2, 3, 3))
 
     pygame.draw.rect(screen, (50, 50, 50), (0, 490, 500, 60))
     _ = len(pos)
