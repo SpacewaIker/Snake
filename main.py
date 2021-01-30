@@ -11,9 +11,10 @@ def add_link():
 
 
 def death():
-    global dead, highscore
+    global dead, highscore, crash_sound
     if not undying:
         dead = True
+        pygame.mixer.Sound.play(crash_sound)
 
         if score > highscore:
             with open('Pygame/Snake/highscore.txt', 'w') as highscore_file:
@@ -47,7 +48,8 @@ screen = pygame.display.set_mode((500, 550))
 pygame.display.set_caption('Snake')
 FONT = pygame.font.SysFont('VT323 regular', 30)
 STYLE = 'green gradiant'
-
+beep_sound = pygame.mixer.Sound('Pygame/snake/beep.wav')
+crash_sound = pygame.mixer.Sound('Pygame/snake/crash.wav')
 
 running = True
 speed = 10
@@ -66,7 +68,7 @@ while running:
     if food:
         pygame.draw.circle(screen, (230, 0, 0), food_pos, 5)
     else:
-        food_pos = (random.randint(5, 495), random.randint(5, 495))
+        food_pos = (random.randint(9, 492), random.randint(9, 482))
         food = True
 
     for i in range(len(pos)):
@@ -100,11 +102,13 @@ while running:
 
     if ((pos[0][0] + 15 > food_pos[0]) and (pos[0][0] - 5 < food_pos[0]) and
             (pos[0][1] + 15 > food_pos[1]) and (pos[0][1] - 5 < food_pos[1])):
+        pygame.mixer.Sound.play(beep_sound)
         food = False
         add_link()
 
-    if ((a := pos[0][0] + direction[0] * speed) < 0) or (a > 490) or (
-            (a := pos[0][1] + direction[1] * speed) < 0) or (a > 480):
+    if not dead and (
+            ((a := pos[0][0] + direction[0] * speed) < 0) or (a > 490)
+            or ((a := pos[0][1] + direction[1] * speed) < 0) or (a > 480)):
         death()
 
     for block in pos[1:]:
